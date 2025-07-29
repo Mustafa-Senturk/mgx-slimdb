@@ -10,8 +10,7 @@
     ],
     "require": {
         "php": ">=7.4",
-        "ext-pdo": "*",
-        "mgx/slimdb": "^1.0"
+        "ext-pdo": "*"
     },
     "autoload": {
         "psr-4": {
