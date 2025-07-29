@@ -1,0 +1,23 @@
+{
+    "name": "mgx/slimdb",
+    "description": "Hafif PDO tabanlı veritabanı bağlantı,migration kütüphanesi",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Mustafa Şentürk",
+            "email": "mustafa@microgrup.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.4",
+        "ext-pdo": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mgx\\Slimdb\\": "src/"
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "keywords": ["Database", "middleware","pdo", "php", "psr-4", "mgx"]
+}
