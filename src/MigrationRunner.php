@@ -103,7 +103,9 @@ class MigrationRunner
             $this->connection->commit();
             echo "Successfully rolled back " . count($rollbackMigrations) . " migration(s).\n";
         } catch (\Exception $e) {
-            $this->connection->rollBack();
+            if ($this->connection->inTransaction()) {
+                $this->connection->rollBack();
+            }
             throw new RuntimeException("Rollback failed: " . $e->getMessage());
         }
     }
@@ -198,10 +200,10 @@ class MigrationRunner
      */
     private function recordMigration(string $migrationFile): void
     {
-        $stmt = $this->connection->getPdo()->prepare(
-            "INSERT INTO {$this->migrationTable} (migration) VALUES (?)"
+        $this->connection->query(
+            "INSERT INTO {$this->migrationTable} (migration) VALUES (?)", 
+            [$migrationFile]
         );
-        $stmt->execute([$migrationFile]);
     }
 
     /**
@@ -210,10 +212,10 @@ class MigrationRunner
      */
     private function removeMigration(string $migrationFile): void
     {
-        $stmt = $this->connection->getPdo()->prepare(
-            "DELETE FROM {$this->migrationTable} WHERE migration = ?"
+        $this->connection->query(
+            "DELETE FROM {$this->migrationTable} WHERE migration = ?", 
+            [$migrationFile]
         );
-        $stmt->execute([$migrationFile]);
     }
 
     /**

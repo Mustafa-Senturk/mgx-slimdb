@@ -113,6 +113,40 @@ class TableBlueprint
     }
 
     /**
+     * Decimal sütunu ekle
+     * @param string $name
+     * @param int $precision
+     * @param int $scale
+     * @return ColumnDefinition
+     */
+    public function decimal(string $name, int $precision = 8, int $scale = 2): ColumnDefinition
+    {
+        return $this->column($name, "decimal($precision,$scale)");
+    }
+
+    /**
+     * Float sütunu ekle
+     * @param string $name
+     * @param int $precision
+     * @param int $scale
+     * @return ColumnDefinition
+     */
+    public function float(string $name, int $precision = 8, int $scale = 2): ColumnDefinition
+    {
+        return $this->column($name, "float($precision,$scale)");
+    }
+
+    /**
+     * Double sütunu ekle
+     * @param string $name
+     * @return ColumnDefinition
+     */
+    public function double(string $name): ColumnDefinition
+    {
+        return $this->column($name, 'double');
+    }
+
+    /**
      * Big integer sütunu ekle
      * @param string $name
      * @return ColumnDefinition
@@ -233,7 +267,11 @@ class TableBlueprint
         foreach ($this->indexes as $index) {
             $type = strtoupper($index['type']);
             $name = $index['name'] ?? $this->generateIndexName($index['columns'], $type);
-            $columns[] = "  {$type} KEY `{$name}` (`" . implode('`, `', $index['columns']) . "`)";
+            if ($type === 'UNIQUE') {
+                $columns[] = "  UNIQUE KEY `{$name}` (`" . implode('`, `', $index['columns']) . "`)";
+            } else {
+                $columns[] = "  KEY `{$name}` (`" . implode('`, `', $index['columns']) . "`)";
+            }
         }
 
         // Foreign key'ler

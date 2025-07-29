@@ -49,7 +49,8 @@ class Migration
     public function create(string $tableName, callable $callback): void
     {
         if ($this->tableExists($tableName)) {
-            throw new RuntimeException("Tablo zaten mevcut: {$tableName}");
+            echo "Tablo zaten mevcut, atlanıyor: {$tableName}\n";
+            return;
         }
 
         $blueprint = new TableBlueprint($tableName);
@@ -57,6 +58,9 @@ class Migration
 
         $sql = $blueprint->buildCreateTable();
         $this->execute($sql);
+        
+        // Cache'i temizle
+        self::$tablesCache = [];
     }
 
     /**
@@ -103,10 +107,24 @@ class Migration
     public function drop(string $tableName): void
     {
         if (!$this->tableExists($tableName)) {
-            throw new RuntimeException("Tablo bulunamadı: {$tableName}");
+            echo "Tablo zaten mevcut değil, atlanıyor: {$tableName}\n";
+            return;
         }
 
         $sql = "DROP TABLE `{$tableName}`";
+        $this->execute($sql);
+        
+        // Cache'i temizle
+        self::$tablesCache = [];
+    }
+
+    /**
+     * Tabloyu sil (varsa)
+     * @param string $tableName
+     */
+    public function dropIfExists(string $tableName): void
+    {
+        $sql = "DROP TABLE IF EXISTS `{$tableName}`";
         $this->execute($sql);
     }
 
@@ -135,6 +153,14 @@ class Migration
      */
     private function execute(string $sql): void
     {
-        $this->connection->query($sql);
+        try {
+            echo "Executing SQL: " . substr($sql, 0, 100) . "...\n";
+            $this->connection->query($sql);
+            echo "SQL executed successfully.\n";
+        } catch (\Exception $e) {
+            echo "SQL execution failed: " . $e->getMessage() . "\n";
+            echo "SQL: " . $sql . "\n";
+            throw $e;
+        }
     }
 }
