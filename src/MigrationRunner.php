@@ -56,7 +56,7 @@ class MigrationRunner
         $pendingMigrations = array_diff($allMigrations, $runMigrations);
 
         if (empty($pendingMigrations)) {
-            echo "No pending migrations.\n";
+            echo "Bekleyen migration yok.\n";
             return;
         }
 
@@ -150,11 +150,12 @@ class MigrationRunner
     private function getMigrationClassName(string $migrationFile): string
     {
         $name = str_replace('.php', '', $migrationFile);
-        $name = preg_replace('/^\d+_/', '', $name);
+        // Sadece ilk tarih kısmını (YYYY_MM_DD_HHMMSS_) kaldır
+        $name = preg_replace('/^\d{4}_\d{2}_\d{2}_\d{6}_/', '', $name);
         $name = str_replace('_', ' ', $name);
         $name = ucwords($name);
         $name = str_replace(' ', '', $name);
-        
+
         return $name;
     }
 

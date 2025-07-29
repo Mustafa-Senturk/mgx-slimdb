@@ -41,8 +41,12 @@ class Connect {
         }
         return self::$instance;
     }
-
     
+    public function getDatabaseName(): string
+    {
+        return $this->connectionParams['dbname'];
+    }
+        
     
     
     private function validateConfig(array $config): array
@@ -113,9 +117,17 @@ class Connect {
         return $this->pdo->commit();
     }
 
+    public function inTransaction(): bool
+    {
+        return $this->pdo->inTransaction();
+    }
+
     public function rollBack(): bool
     {
-        return $this->pdo->rollBack();
+        if ($this->inTransaction()) {
+            return $this->pdo->rollBack();
+        }
+        return false;
     }
 
     // Son eklenen ID

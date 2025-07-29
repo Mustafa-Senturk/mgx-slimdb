@@ -138,7 +138,7 @@ class TableBlueprint
     public function timestamps(): void
     {
         $this->timestamp('created_at')->default('CURRENT_TIMESTAMP');
-        $this->timestamp('updated_at')->default('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP');
+        $this->timestamp('updated_at')->defaultRaw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP');
     }
 
     /**
@@ -179,8 +179,8 @@ class TableBlueprint
      */
     public function foreign(
         string $column,
-        string $references = 'id',
         string $onTable,
+        string $references = 'id',
         string $onDelete = 'RESTRICT',
         string $onUpdate = 'CASCADE'
     ): void {

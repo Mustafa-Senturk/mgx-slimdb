@@ -69,7 +69,12 @@ class ColumnDefinition
      */
     public function default($value): self
     {
-        $this->options['default'] = $value;
+        // Fonksiyonel değerler için tırnak ekleme!
+        if (is_string($value) && preg_match('/^(CURRENT_TIMESTAMP|NOW\(\))$/i', $value)) {
+            $this->options['default'] = $value;
+        } else {
+            $this->options['default'] = $value;
+        }
         return $this;
     }
 
@@ -145,6 +150,17 @@ class ColumnDefinition
     }
 
     /**
+     * Ham varsayılan değer ata
+     * @param string $expression
+     * @return $this
+     */
+    public function defaultRaw(string $expression): self
+    {
+        $this->options['default_raw'] = $expression;
+        return $this;
+    }
+
+    /**
      * Sütun tanımını oluştur
      * @return string
      */
@@ -165,12 +181,15 @@ class ColumnDefinition
         }
 
         // Default value
-        if ($this->options['default'] !== null) {
-            $default = is_string($this->options['default']) 
-                ? "'{$this->options['default']}'" 
-                : $this->options['default'];
-            
-            $sql .= " DEFAULT {$default}";
+        if (isset($this->options['default_raw'])) {
+            $sql .= " DEFAULT {$this->options['default_raw']}";
+        } elseif ($this->options['default'] !== null) {
+            // Fonksiyonel değerler için tırnak ekleme!
+            if (is_string($this->options['default']) && preg_match('/^(CURRENT_TIMESTAMP|NOW\(\))$/i', $this->options['default'])) {
+                $sql .= " DEFAULT {$this->options['default']}";
+            } else {
+                $sql .= " DEFAULT '{$this->options['default']}'";
+            }
         }
 
         // Auto increment
