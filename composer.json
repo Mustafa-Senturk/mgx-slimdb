@@ -19,12 +19,5 @@
     },
     "minimum-stability": "stable",
     "prefer-stable": true,
-    "keywords": ["Database", "middleware","pdo", "php", "psr-4", "mgx"],
-    "version": "1.0.0",
-    "repositories": [
-        {
-            "type": "git",
-            "url": "https://github.com/Mustafa-Senturk/mgx-slimdb.git"
-        }
-    ]
+    "keywords": ["Database", "middleware","pdo", "php", "psr-4", "mgx"]
 }

@@ -64,15 +64,17 @@ class MigrationRunner
         
         try {
             $this->connection->beginTransaction();
-            
+
             foreach ($pendingMigrations as $migrationFile) {
                 $this->runMigration($migrationFile);
             }
-            
+
             $this->connection->commit();
             echo "Successfully ran " . count($pendingMigrations) . " migration(s).\n";
         } catch (\Exception $e) {
-            $this->connection->rollBack();
+            if ($this->connection->inTransaction()) {
+                $this->connection->rollBack();
+            }
             throw new RuntimeException("Migration failed: " . $e->getMessage());
         }
     }

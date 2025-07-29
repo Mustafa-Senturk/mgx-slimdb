@@ -69,6 +69,10 @@ class ColumnDefinition
      */
     public function default($value): self
     {
+        // Boolean için 0/1'e çevir
+        if (is_bool($value)) {
+            $value = $value ? 1 : 0;
+        }
         // Fonksiyonel değerler için tırnak ekleme!
         if (is_string($value) && preg_match('/^(CURRENT_TIMESTAMP|NOW\(\))$/i', $value)) {
             $this->options['default'] = $value;

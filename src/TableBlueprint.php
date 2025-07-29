@@ -258,6 +258,13 @@ class TableBlueprint
         return $sql . ';';
     }
 
+    public function boolean(string $name): ColumnDefinition
+    {
+        // MySQL'de boolean = tinyint(1)
+        return $this->column($name, 'tinyint(1)');
+    }
+
+
     /**
      * Tablo değiştirme SQL'i oluştur
      * @return string
